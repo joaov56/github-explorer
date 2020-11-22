@@ -4,3 +4,5 @@ Roteamento das paginas usando o React Router Dom:
   Switch garante que apenas uma rota vai ser exibida
 
 Paginas tem que ser criadas dentro da pasta Pages, cada uma em sua pasta
+
+Styled Components isola o CSS
