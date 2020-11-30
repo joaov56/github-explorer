@@ -1,46 +1,86 @@
-import React from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
 import logoImg from '../../assets/logo.svg';
-import { Title, Form, Repositories } from './styles';
+import api from '../../services/api';
+import {
+  Title, Form, Repositories, Error,
+} from './styles';
 
-const Dashboard: React.FC = () => (
-  <>
-    <img src={logoImg} alt="github explorer" />
-    <Title>Explore repositórios no Github</Title>
+interface Repository{
+  full_name: string;
+  description: string;
+  owner: {
+    login: string;
+    avatar_url: string;
 
-    <Form>
-      <input type="text" placeholder="Digite o nome do repositório" />
-      <button type="submit">Pesquisar</button>
-    </Form>
+  };
+}
 
-    <Repositories>
-      <a href="teste">
-        <img src="https://avatars2.githubusercontent.com/u/61507139?s=460&u=49181336ad2c4aeb1eb4057b77e32b7cf2ad15c6&v=4" alt="foto" />
-        <div>
-          <strong>joaov56/happy-rocketseat</strong>
-          <p>
-            An application developed during Next Level Week 3 using React,
-            React native and NodeJS
+const Dashboard: React.FC = () => {
+  const [newRepo, setNewRepo] = useState('');
+  const [inputError, setInputError] = useState('');
+  const [repositories, setRepositories] = useState<Repository[]>(() => {
+    const storagedRepositories = localStorage.getItem('@GithubExplorer:repositories');
 
-          </p>
-        </div>
-        <FiChevronRight size={20} />
-      </a>
+    if (storagedRepositories) {
+      return JSON.parse(storagedRepositories);
+    }
+    return [];
+  });
 
-      <a href="teste">
-        <img src="https://avatars2.githubusercontent.com/u/61507139?s=460&u=49181336ad2c4aeb1eb4057b77e32b7cf2ad15c6&v=4" alt="foto" />
-        <div>
-          <strong>joaov56/happy-rocketseat</strong>
-          <p>
-            An application developed during Next Level Week 3 using React,
-            React native and NodeJS
+  useEffect(() => {
+    localStorage.setItem('@GithubExplorer:repositories', JSON.stringify(repositories));
+  }, [repositories]);
 
-          </p>
-        </div>
-        <FiChevronRight size={20} />
-      </a>
-    </Repositories>
-  </>
-);
+  async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    if (!newRepo) {
+      setInputError('Digite o autor/nome do repositorio');
+      return;
+    }
+
+    try {
+      const response = await api.get<Repository>(`repos/${newRepo}`);
+      const repository = response.data;
+
+      setRepositories([...repositories, repository]);
+      setNewRepo('');
+      setInputError('');
+    } catch (error) {
+      setInputError('Erro na busca por esse repositório');
+    }
+
+    // Adição de um novo repositório
+    // Consumir API do github
+    // Salvar repositório no Estado
+  }
+
+  return (
+
+    <>
+      <img src={logoImg} alt="github explorer" />
+      <Title>Explore repositórios no Github</Title>
+
+      <Form hasError={!!inputError} onSubmit={handleAddRepository}>
+        <input type="text" value={newRepo} onChange={(e) => setNewRepo(e.target.value)} placeholder="Digite o nome do repositório" />
+        <button type="submit">Pesquisar</button>
+      </Form>
+      {inputError && <Error>{inputError}</Error>}
+      <Repositories>
+        {repositories.map((repository) => (
+          <a key={repository.full_name} href="teste">
+            <img src={repository.owner.avatar_url} alt="foto" />
+            <div>
+              <strong>{repository.full_name}</strong>
+              <p>{repository.description}</p>
+            </div>
+            <FiChevronRight size={20} />
+          </a>
+        ))}
+
+      </Repositories>
+    </>
+  );
+};
 
 export default Dashboard;
