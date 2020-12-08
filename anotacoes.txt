@@ -8,3 +8,13 @@ Paginas tem que ser criadas dentro da pasta Pages, cada uma em sua pasta
 Styled Components isola o CSS
 
 Camelcase: off 
+
+Promisse Race, qual chegar mais rapido é retornada
+
+Uma das formas de usar o use Effect=     async function loadData(): Promise<void> {
+      const [repository, issues] = await Promise.all([
+        api.get(`repos/${params.repository}`),
+        api.get(`repos/${params.repository}/issues`),
+      ]);
+    }
+  }, [params.repository]);
