@@ -1,9 +1,9 @@
 <h1 align="center">
-    <img src="https://ibb.co/hx5sRVL"  />
+    <img src="https://ik.imagekit.io/r6ttxxmdjw/github_1_TxkEsZfw_.png"  />
 </h1>
 
 <h1 align="center">
-    <img src= "https://ibb.co/ZM8t9qb">
+    <img src= "https://ik.imagekit.io/r6ttxxmdjw/github_2_TFHfSdYg9.png">
 </h1>
 
 # Sobre
@@ -18,6 +18,7 @@ O projeto foi desenvolvido usando as seguintes tecnologias
 - React Hooks
 - Styled Components
 - Axios
+- Typescript
 
 
 # Como baixar
